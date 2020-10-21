@@ -1,0 +1,17 @@
+{
+  "name": "javascript-to-do-list",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "repository": "https://github.com/paulosandinof/javascript-to-do-list.git",
+  "author": "Paulo Sandino <paulosandino@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
