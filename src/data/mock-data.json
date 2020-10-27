@@ -1,0 +1,22 @@
+{
+    "to-do-list": {
+        "tarefa1": {
+            "name": "Tarefa à fazer",
+            "Responsible": "Paulo Sandino"
+        },
+        "tarefa2": {
+            "name": "Tarefa à fazer",
+            "Responsible": "Victor Morais"
+        }
+    },
+    "done-list": {
+        "tarefa1": {
+            "name": "Tarefa feita",
+            "Responsible": "Paulo Sandino"
+        },
+        "tarefa2": {
+            "name": "Tarefa feita",
+            "Responsible": "Victor Morais"
+        }
+    }
+}
