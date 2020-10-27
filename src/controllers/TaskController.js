@@ -1,6 +1,5 @@
-const taskFactory = require("../Models/Task");
-const { tasks } = require("../Repositories/TaskRepository");
-const TaskRepository = require("../Repositories/TaskRepository");
+const taskFactory = require("../models/Task");
+const TaskRepository = require("../repositories/TaskRepository");
 
 module.exports = {
   async index(req, res) {

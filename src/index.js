@@ -9,10 +9,10 @@ app.use(express.json());
 
 app.use("/api", routes);
 
-app.use("/public", express.static(__dirname + "/public"));
+app.use("/public", express.static(__dirname + "/views/public"));
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/views/index.html");
 });
 
 app.listen("3000");
