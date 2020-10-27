@@ -1,7 +1,26 @@
+const fs = require('fs');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
+
+async function init() {
+  try {
+    var lists = await readFile('./src/data/mock-data.json');
+    lists = JSON.parse(lists);
+    return lists;
+  }
+  catch (err) {
+    console.log(err)
+  }
+}
+
 module.exports = {
   tasks: [],
 
-  findAll() {
+  async findAll() {
+    var lists = await init()
+
+    this.tasks = lists.toDoList;
+    
     return this.tasks;
   },
 

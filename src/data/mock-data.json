@@ -1,22 +1,26 @@
 {
-    "to-do-list": {
-        "tarefa1": {
-            "name": "Tarefa à fazer",
-            "Responsible": "Paulo Sandino"
+    "toDoList": [
+        {
+            "id": 1,
+            "description": "Tarefa a fazer",
+            "responsible": "Paulo Sandino"
         },
-        "tarefa2": {
-            "name": "Tarefa à fazer",
-            "Responsible": "Victor Morais"
+        {
+            "id": 2,
+            "description": "Tarefa a fazer",
+            "responsible": "Victor Morais"
         }
-    },
-    "done-list": {
-        "tarefa1": {
-            "name": "Tarefa feita",
-            "Responsible": "Paulo Sandino"
+    ],
+    "doneList": [
+        {
+            "id": 3,
+            "description": "Tarefa feita",
+            "responsible": "Paulo Sandino"
         },
-        "tarefa2": {
-            "name": "Tarefa feita",
-            "Responsible": "Victor Morais"
+        {
+            "id": 4,
+            "description": "Tarefa feita",
+            "responsible": "Victor Morais"
         }
-    }
+    ]
 }

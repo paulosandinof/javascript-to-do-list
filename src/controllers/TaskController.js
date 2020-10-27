@@ -3,7 +3,7 @@ const TaskRepository = require("../repositories/TaskRepository");
 
 module.exports = {
   async index(req, res) {
-    const tasks = TaskRepository.findAll();
+    const tasks = await TaskRepository.findAll();
 
     return res.json(tasks);
   },
