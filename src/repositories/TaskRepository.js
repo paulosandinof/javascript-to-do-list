@@ -4,23 +4,27 @@ const readFile = util.promisify(fs.readFile);
 
 async function init() {
   try {
-    var lists = await readFile('./src/data/mock-data.json');
-    lists = JSON.parse(lists);
-    return lists;
+    var list = await readFile('./src/data/mock-data.json');
+    list = JSON.parse(list);
+
+    return list;
   }
   catch (err) {
     console.log(err)
   }
 }
 
+function saveToFile(tasks){
+  var writer = fs.createWriteStream('./src/data/mock-data.json');
+  writer.write(JSON.stringify(tasks));
+}
+
 module.exports = {
   tasks: [],
 
   async findAll() {
-    var lists = await init()
+    this.tasks = await init();
 
-    this.tasks = lists.toDoList;
-    
     return this.tasks;
   },
 
@@ -34,9 +38,12 @@ module.exports = {
     if (index !== -1) {
       this.tasks[index].description = task.description;
       this.tasks[index].responsible = task.responsible;
+      this.tasks[index].isDone = task.isDone;
     } else {
       this.tasks.push(task);
     }
+
+    saveToFile(this.tasks);
 
     return task;
   },

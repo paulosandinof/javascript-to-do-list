@@ -5,5 +5,6 @@ module.exports = function (description, responsible) {
     id: uuid(),
     description,
     responsible,
+    isDone: false
   };
 };
