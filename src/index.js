@@ -1,9 +1,17 @@
-const path = require("path");
+require("dotenv").config();
+
 const express = require("express");
+const mongoose = require("mongoose");
 
 const routes = require("./routes");
 
 const app = express();
+
+mongoose.connect(
+  `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}` +
+    `@${process.env.MONGO_DB_CLUSTER}/${process.env.DATABASE_NAME}?retryWrites=true&w=majority`,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
 
 app.use(express.json());
 

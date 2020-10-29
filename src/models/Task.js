@@ -1,10 +1,9 @@
-const { v4: uuid } = require("uuid");
+const { model, Schema } = require("mongoose");
 
-module.exports = function (description, responsible) {
-  return {
-    id: uuid(),
-    description,
-    responsible,
-    isDone: false
-  };
-};
+const taskSchema = new Schema({
+  description: { type: String },
+  responsible: { type: String },
+  finished: { type: Boolean, default: false },
+});
+
+module.exports = model("Task", taskSchema);
