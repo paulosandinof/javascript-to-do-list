@@ -26,47 +26,58 @@ async function add() {
   taskToHTML(task);
 }
 
-function remove(el) {
+async function remove(el) {
   // Get element to remove, first parent is the button div, second one is the task itself
-  var element = el.parentElement.parentElement;
-  element.remove();
+  var task = el.parentElement.parentElement;
+
+  await removeTask(task.id);
+
+  task.remove();
 }
 
-function move(el) {
+async function move(el) {
   // Get parent list, first, second and third parent are input divs, fourth one is the task itself
-  var task = el.parentElement.parentElement.parentElement.parentElement;
-  
-  // Use task id to find if it's done or not in Repository
-  // Remove element from list and appendit to the correct one. For this changes in the taskToHTML are needed
+  var taskHTML = el.parentElement.parentElement.parentElement.parentElement; // Task from HTML
+  var taskDB = await getTask(taskHTML.id);  // Task from database
+
+  if (taskDB.finished) {
+    taskDB.finished = false;
+  }
+  else {
+    taskDB.finished = true;
+  }
+
+  taskHTML.remove();
+
+  await patchTask(taskDB);
+
+  taskToHTML(taskDB);
 }
 
-function edit(el) {
-  // TODO
-  console.log("edit element");
-}
+async function edit(el) {
+  var task = el.parentElement;
 
-async function saveTask(description, responsible) {
-  const response = await fetch("/api/task", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      description,
-      responsible,
-    }),
-  });
+  var descriptionHTML = task.children[0].children[1];
 
-  const task = await response.json();
+  if(descriptionHTML.disabled){
+    descriptionHTML.disabled = false;
+  }
+  else{
+    descriptionHTML.disabled = true;
+  }
 
-  return task;
+  const taskDB = await getTask(task.id);
+
+  taskDB.description = descriptionHTML.value;
+
+  await patchTask(taskDB);
 }
 
 // Append element to it's respective list
 function taskToHTML(task) {
   var checked, list, style, button;
 
-  if (task.isDone) {
+  if (task.finished) {
     checked = "checked";
     list = "done-list";
     style = "text-decoration: line-through;"
@@ -91,7 +102,7 @@ function taskToHTML(task) {
 
   const listToAppend = document.getElementById(list);
   const node = document.createElement("DIV");
-  node.id = task.id;
+  node.id = task._id;
   node.className = "row";
 
   node.innerHTML =
@@ -119,4 +130,70 @@ function taskToHTML(task) {
     '  </div>';
 
   listToAppend.parentNode.insertBefore(node, listToAppend.nextSibling);
+}
+
+// maybe unify as one and use conditionals?
+
+async function saveTask(description, responsible) {
+  const response = await fetch("/api/task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      description,
+      responsible
+    }),
+  });
+
+  const task = await response.json();
+
+  return task;
+}
+
+async function patchTask(taskDB) {
+  const id = taskDB._id;
+  const description = taskDB.description;
+  const responsible = taskDB.responsible;
+  const finished = taskDB.finished;
+
+  const response = await fetch("/api/task/" + id, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      description,
+      responsible,
+      finished
+    }),
+  });
+
+  const task = await response.json();
+
+  return task;
+}
+
+async function removeTask(id) {
+  const response = await fetch("/api/task/" + id, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  await response.json();
+}
+
+async function getTask(id) {
+  const response = await fetch("/api/task/" + id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const task = await response.json();
+
+  return task;
 }
