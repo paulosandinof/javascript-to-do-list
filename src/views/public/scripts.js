@@ -23,6 +23,9 @@ async function add() {
   // Add validation
   const task = await saveTask(taskDescription.value, taskResponsible.value);
 
+  taskDescription.value = "";
+  taskResponsible.value = "";
+
   taskToHTML(task);
 }
 
