@@ -23,6 +23,10 @@ async function add() {
   // Add validation
   const task = await saveTask(taskDescription.value, taskResponsible.value);
 
+  console.log(document.querySelector("#errorModal"));
+
+  $("#errorModal").modal("toggle");
+
   taskDescription.value = "";
   taskResponsible.value = "";
 
