@@ -1,4 +1,4 @@
-const taskFactory = require("../models/Task");
+const Joi = require("joi");
 const Task = require("../models/Task");
 
 module.exports = {
@@ -18,27 +18,62 @@ module.exports = {
   async store(req, res) {
     const { description, responsible } = req.body;
 
-    const task = new Task();
+    const schema = Joi.object({
+      description: Joi.string().trim().required().messages({
+        "any.required": "A descrição da tarefa não pode estar vazia",
+        "string.empty": "A descrição da tarefa não pode estar vazia",
+      }),
+      responsible: Joi.string().trim().required().messages({
+        "any.required": "O responsável da tarefa não pode estar vazio",
+        "string.empty": "O responsável da tarefa não pode estar vazio",
+      }),
+    });
 
-    task.description = description;
-    task.responsible = responsible;
+    try {
+      const value = await schema.validateAsync({
+        description,
+        responsible,
+      });
 
-    const savedTask = await task.save();
+      const task = new Task();
 
-    return res.json(savedTask);
+      task.description = value.description;
+      task.responsible = value.responsible;
+
+      const savedTask = await task.save();
+
+      return res.json(savedTask);
+    } catch (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
   },
 
   async update(req, res) {
     const { id } = req.params;
     const { description, responsible, finished } = req.body;
 
-    const savedTask = await Task.findByIdAndUpdate(
-      { _id: id },
-      { description, responsible, finished },
-      { new: true, omitUndefined: true }
-    );
+    const schema = Joi.object({
+      description: Joi.string().trim().required().messages({
+        "any.required": "A descrição da tarefa não pode estar vazia",
+        "string.empty": "A descrição da tarefa não pode estar vazia",
+      }),
+    });
 
-    return res.json(savedTask);
+    try {
+      const value = await schema.validateAsync({
+        description,
+      });
+
+      const savedTask = await Task.findByIdAndUpdate(
+        { _id: id },
+        { description: value.description, responsible, finished },
+        { new: true, omitUndefined: true }
+      );
+
+      return res.json(savedTask);
+    } catch (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
   },
 
   async destroy(req, res) {

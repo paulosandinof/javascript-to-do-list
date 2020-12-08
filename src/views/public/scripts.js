@@ -20,17 +20,19 @@ async function add() {
   var taskDescription = document.getElementById("task-description");
   var taskResponsible = document.getElementById("task-responsible");
 
-  // Add validation
-  const task = await saveTask(taskDescription.value, taskResponsible.value);
+  try {
+    const task = await saveTask(taskDescription.value, taskResponsible.value);
 
-  console.log(document.querySelector("#errorModal"));
+    console.log(task);
 
-  $("#errorModal").modal("toggle");
+    taskDescription.value = "";
+    taskResponsible.value = "";
 
-  taskDescription.value = "";
-  taskResponsible.value = "";
-
-  taskToHTML(task);
+    taskToHTML(task);
+  } catch (error) {
+    document.querySelector("#errorModal .modal-body").innerHTML = error.message;
+    $("#errorModal").modal("toggle");
+  }
 }
 
 async function remove(el) {
@@ -72,10 +74,17 @@ async function edit(el) {
   }
 
   const taskDB = await getTask(task.id);
-
+  const oldDescription = taskDB.description;
   taskDB.description = descriptionHTML.value;
 
-  await patchTask(taskDB);
+  try {
+    await patchTask(taskDB);
+  } catch (error) {
+    descriptionHTML.value = oldDescription;
+
+    document.querySelector("#errorModal .modal-body").innerHTML = error.message;
+    $("#errorModal").modal("toggle");
+  }
 }
 
 // Append element to it's respective list
@@ -158,6 +167,11 @@ async function saveTask(description, responsible) {
     }),
   });
 
+  if (response.status === 400) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
   const task = await response.json();
 
   return task;
@@ -180,6 +194,11 @@ async function patchTask(taskDB) {
       finished,
     }),
   });
+
+  if (response.status === 400) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
 
   const task = await response.json();
 
